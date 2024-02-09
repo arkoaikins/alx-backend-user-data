@@ -11,8 +11,7 @@ import re
 from typing import List
 import logging
 import os
-import mysql.connector as connector
-from mysql.connector import error
+import mysql.connector
 
 
 class RedactingFormatter(logging.Formatter):
@@ -64,15 +63,16 @@ def get_logger() -> logging.Logger:
     return log
 
 
-def get_db() -> connector.connection.MySQLConnection:
-    '''Function to connect to database'''
-    host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
-    password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
-    user = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
-    hol_db = os.getenv("PERSONAL_DATA_DB_NAME")
-
-    try:
-        connection = connector.connect(host=host, database=hol_db, username=user, password=password)  # nopep8
-        return connection
-    except Error as e:
-        print('Error:', e)
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """
+    return db connection
+    """
+    user = os.getenv('PERSONAL_DATA_DB_USERNAME') or "root"
+    passwd = os.getenv('PERSONAL_DATA_DB_PASSWORD') or ""
+    host = os.getenv('PERSONAL_DATA_DB_HOST') or "localhost"
+    db_name = os.getenv('PERSONAL_DATA_DB_NAME')
+    conn = mysql.connector.connect(user=user,
+                                   password=passwd,
+                                   host=host,
+                                   database=db_name)
+    return conn
