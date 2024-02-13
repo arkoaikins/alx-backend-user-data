@@ -27,9 +27,16 @@ def stats() -> str:
 
 
 @app_views.route('/unauthorized', strict_slashes=False)
-def unauthorized_acees():
-  """
-  Unauthorized 
-  """
-  abort(401)
-  
+def unauthorized_acess():
+    """
+    Unauthorized
+    """
+    abort(401)
+
+
+@app_views.route('/forbidden', strict_slashes=False)
+def forbidden_acess():
+    """
+    Acess forbidden
+    """
+    abort(403)
