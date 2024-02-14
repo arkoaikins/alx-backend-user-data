@@ -35,6 +35,7 @@ class Auth:
     def authorization_header(self, request=None) -> str:
         """
         Will return authorization header for request
+        Validates all requests to secure the API
 
         Args:
         request: This is set to None as default(optional)
@@ -43,7 +44,14 @@ class Auth:
         Returns:
         A string,which is the authorization_header
         """
-        return None
+        if request is None:
+            return None
+
+        auth_header = request.headers.get('Authorization')
+        if auth_header is None:
+            return None
+
+        return auth_header
 
     def current_user(self, request=None) -> TypeVar('User'):
         """
