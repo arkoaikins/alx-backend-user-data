@@ -6,7 +6,7 @@ from flask import Flask, jsonify, request, abort, redirect, url_for
 from auth import Auth
 
 app = Flask(__name__)
-Auth = Auth()
+AUTH = Auth()
 
 
 @app.route("/", methods=["GET"])
@@ -21,7 +21,7 @@ def register_user():
     email = request.form.get("email")
     password = request.form.get("password")
     try:
-        Auth.register_user(email, password)
+        AUTH.register_user(email, password)
         return jsonify({"email": email, "message": "user created"})  # nopep8
     except ValueError:
         return jsonify({"message": "email already registered"})
@@ -32,10 +32,10 @@ def login():
     """Login user"""
     email = request.form.get("email")
     password = request.form.get("password")
-    valid = Auth.valid_login(email, password)
+    valid = AUTH.valid_login(email, password)
     if not valid:
         abort(401)
-    session_id = Auth.create_session(email)
+    session_id = AUTH.create_session(email)
     response = jsonify({"email": email, "message": "logged in"})
     response.set_cookie("session_id", session_id)
     return response
@@ -48,7 +48,7 @@ def logout() -> str:
     user = Auth.get_user_from_session_id(session_id)
     if user is None:
         abort(403)
-    Auth.destroy_session(user.id)
+    AUTH.destroy_session(user.id)
     return redirect("/")
 
 
