@@ -9,13 +9,13 @@ app = Flask(__name__)
 AUTH = Auth()
 
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET"], strict_slashes=False)
 def index():
     """home"""
     return jsonify({"message": "Bienvenue"})
 
 
-@app.route("/users", methods=["POST"])
+@app.route("/users", methods=["POST"], strict_slashes=False)
 def register_user():
     """Register user"""
     email = request.form.get("email")
@@ -27,7 +27,7 @@ def register_user():
         return jsonify({"message": "email already registered"})
 
 
-@app.route("/sessions", methods=["POST"])
+@app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login():
     """Login user"""
     email = request.form.get("email")
@@ -61,6 +61,20 @@ def profile() -> dict:
         return jsonify({"email": user.email}), 200
     else:
         abort(403)
+
+
+@app.route("/reset_password", methods=["POST"], strict_slashes=False)
+def get_reset_password_token() -> str:
+    """Get reset password token"""
+    email = request.form.get("email")
+    reset_token = None
+    try:
+        reset_token = AUTH.get_reset_password_token(email)
+    except ValueError:
+        reset_token = None
+    if reset_token is None:
+        abort(403)
+    return jsonify({"email": email, "reset_token": reset_token})
 
 
 if __name__ == "__main__":
